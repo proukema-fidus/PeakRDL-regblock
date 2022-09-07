@@ -158,6 +158,13 @@ class Exporter(ExporterSubcommandPlugin):
             is active-high and synchronous [rst]"""
         )
 
+        arg_group.add_argument(
+            "--pack-hwif-structs",
+            dest="pack_hwif_structs",
+            action="store_true",
+            default=False,
+            help="Enable use of packed structs for the HWIF types"
+        )
 
     def do_export(self, top_node: 'AddrmapNode', options: 'argparse.Namespace') -> None:
         cpuifs = self.get_cpuifs()
@@ -221,4 +228,5 @@ class Exporter(ExporterSubcommandPlugin):
             address_width=options.addr_width,
             default_reset_activelow=default_reset_activelow,
             default_reset_async=default_reset_async,
+            pack_hwif_structs=options.pack_hwif_structs,
         )

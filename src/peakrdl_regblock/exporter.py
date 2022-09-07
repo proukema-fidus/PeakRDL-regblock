@@ -118,6 +118,8 @@ class RegblockExporter:
             If overriden to True, default reset is active-low instead of active-high.
         default_reset_async: bool
             If overriden to True, default reset is asynchronous instead of synchronous.
+        pack_structs: bool
+            Set this to ``True`` to produce packed structs for the HWIF definitions
         """
         # If it is the root node, skip to top addrmap
         if isinstance(node, RootNode):
@@ -129,6 +131,7 @@ class RegblockExporter:
 
         cpuif_cls = kwargs.pop("cpuif_cls", None) or APB4_Cpuif # type: Type[CpuifBase]
         generate_hwif_report = kwargs.pop("generate_hwif_report", False) # type: bool
+        pack_hwif_structs = kwargs.pop("pack_hwif_structs", False) # type: bool
 
         # Check for stray kwargs
         if kwargs:
@@ -142,7 +145,7 @@ class RegblockExporter:
 
         # Construct exporter components
         self.cpuif = cpuif_cls(self)
-        self.hwif = Hwif(self, hwif_report_file=hwif_report_file)
+        self.hwif = Hwif(self, hwif_report_file=hwif_report_file, pack_structs=pack_hwif_structs)
         self.readback = Readback(self)
         self.address_decode = AddressDecode(self)
         self.field_logic = FieldLogic(self)

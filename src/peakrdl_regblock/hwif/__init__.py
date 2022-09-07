@@ -24,12 +24,14 @@ class Hwif:
 
     def __init__(
         self, exp: 'RegblockExporter',
-        hwif_report_file: Optional[TextIO]
+        hwif_report_file: Optional[TextIO],
+        pack_structs: bool = False
     ):
         self.exp = exp
 
         self.has_input_struct = False
         self.has_output_struct = False
+        self.pack_structs = pack_structs
 
         self.hwif_report_file = hwif_report_file
 
@@ -56,6 +58,7 @@ class Hwif:
         lines = []
 
         gen_in = self._gen_in_cls(self)
+        gen_in.packed = self.pack_structs
         structs_in = gen_in.get_struct(
             self.top_node,
             f"{self.top_node.inst_name}__in_t"
@@ -67,6 +70,7 @@ class Hwif:
             self.has_input_struct = False
 
         gen_out = self._gen_out_cls(self)
+        gen_out.packed = self.pack_structs
         structs_out = gen_out.get_struct(
             self.top_node,
             f"{self.top_node.inst_name}__out_t"
