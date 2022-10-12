@@ -120,6 +120,8 @@ class RegblockExporter:
             If overriden to True, default reset is asynchronous instead of synchronous.
         pack_structs: bool
             Set this to ``True`` to produce packed structs for the HWIF definitions
+        pack_field_storage: bool
+            Set this to ``True`` to produce packed structs for the HWIF definitions
         """
         # If it is the root node, skip to top addrmap
         if isinstance(node, RootNode):
@@ -132,6 +134,7 @@ class RegblockExporter:
         cpuif_cls = kwargs.pop("cpuif_cls", None) or APB4_Cpuif # type: Type[CpuifBase]
         generate_hwif_report = kwargs.pop("generate_hwif_report", False) # type: bool
         pack_hwif_structs = kwargs.pop("pack_hwif_structs", False) # type: bool
+        pack_field_storage = kwargs.pop("pack_field_storage", False) # type: bool
 
         # Check for stray kwargs
         if kwargs:
@@ -148,7 +151,10 @@ class RegblockExporter:
         self.hwif = Hwif(self, hwif_report_file=hwif_report_file, pack_structs=pack_hwif_structs)
         self.readback = Readback(self)
         self.address_decode = AddressDecode(self)
-        self.field_logic = FieldLogic(self)
+        self.field_logic = FieldLogic(
+            self,
+            pack_field_storage = pack_field_storage
+        )
         self.write_buffering = WriteBuffering(self)
         self.read_buffering = ReadBuffering(self)
         self.dereferencer = Dereferencer(self)

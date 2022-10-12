@@ -29,18 +29,29 @@ class _AnonymousStruct(_StructBase):
         self.array_dimensions = array_dimensions
 
     def __str__(self) -> str:
-        if self.array_dimensions:
-            suffix = "[" + "][".join((str(n) for n in self.array_dimensions)) + "]"
+        if self.packed:
+            if self.array_dimensions:
+                prefix = "[" + "][".join((f"{n-1}:0" for n in self.array_dimensions)) + "] "
+            else:
+                prefix = ""
+            return (
+                "struct packed "
+                + "{\n"
+                + super().__str__()
+                + f"\n}} {prefix}{self.inst_name};"
+            )
         else:
-            suffix = ""
+            if self.array_dimensions:
+                suffix = "[" + "][".join((str(n) for n in self.array_dimensions)) + "]"
+            else:
+                suffix = ""
 
-        return (
-            "struct "
-            + ("packed " if self.packed else "")
-            + "{\n"
-            + super().__str__()
-            + f"\n}} {self.inst_name}{suffix};"
-        )
+            return (
+                "struct "
+                + "{\n"
+                + super().__str__()
+                + f"\n}} {self.inst_name}{suffix};"
+            )
 
 
 class _TypedefStruct(_StructBase):
@@ -95,6 +106,8 @@ class StructGenerator:
 
 
     def add_member(self, name: str, width: int = 1, array_dimensions: Optional[List[int]] = None) -> None:
+        assert not array_dimensions or not self.packed
+
         if array_dimensions:
             suffix = "[" + "][".join((str(n) for n in array_dimensions)) + "]"
         else:

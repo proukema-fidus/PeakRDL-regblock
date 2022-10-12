@@ -21,8 +21,9 @@ if TYPE_CHECKING:
     from ..exporter import RegblockExporter, DesignState
 
 class FieldLogic:
-    def __init__(self, exp:'RegblockExporter'):
+    def __init__(self, exp:'RegblockExporter', pack_field_storage : bool = False):
         self.exp = exp
+        self.pack_field_storage = pack_field_storage
 
         self._hw_conditionals = {} # type: Dict[int, List[NextStateConditional]]
         self._sw_conditionals = {} # type: Dict[int, List[NextStateConditional]]
@@ -38,7 +39,7 @@ class FieldLogic:
         return self.exp.ds.top_node
 
     def get_storage_struct(self) -> str:
-        struct_gen = FieldStorageStructGenerator(self)
+        struct_gen = FieldStorageStructGenerator(self, packed = self.pack_field_storage)
         s = struct_gen.get_struct(self.top_node, "field_storage_t")
 
         # Only declare the storage struct if it exists

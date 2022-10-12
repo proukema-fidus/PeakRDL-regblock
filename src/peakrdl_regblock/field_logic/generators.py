@@ -74,9 +74,10 @@ class CombinationalStructGenerator(RDLStructGenerator):
 
 class FieldStorageStructGenerator(RDLStructGenerator):
 
-    def __init__(self, field_logic: 'FieldLogic') -> None:
+    def __init__(self, field_logic: 'FieldLogic', packed: bool = False) -> None:
         super().__init__()
         self.field_logic = field_logic
+        self.packed = packed
 
     def enter_AddressableComponent(self, node: 'AddressableNode') -> Optional[WalkerAction]:
         super().enter_AddressableComponent(node)

@@ -165,6 +165,13 @@ class Exporter(ExporterSubcommandPlugin):
             default=False,
             help="Enable use of packed structs for the HWIF types"
         )
+        arg_group.add_argument(
+            "--pack-field-storage",
+            dest="pack_field_storage",
+            action="store_true",
+            default=False,
+            help="Enable use of packed structs for internal field storage"
+        )
 
     def do_export(self, top_node: 'AddrmapNode', options: 'argparse.Namespace') -> None:
         cpuifs = self.get_cpuifs()
@@ -229,4 +236,5 @@ class Exporter(ExporterSubcommandPlugin):
             default_reset_activelow=default_reset_activelow,
             default_reset_async=default_reset_async,
             pack_hwif_structs=options.pack_hwif_structs,
+            pack_field_storage=options.pack_field_storage,
         )
